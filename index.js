@@ -32,7 +32,14 @@ client.on('messageCreate', async message => {
     if (message.author.bot) return;
 
     const prefix = '!';  // Prefixo para os comandos
-    if (!message.content.startsWith(prefix)) return;
+    if (!message.content.startsWith(prefix)) {
+        // Código de nível aqui
+        const levelCommand = client.commands.get('level');
+        if (levelCommand) {
+            await levelCommand.execute(message);
+        }
+        return;
+    }
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
