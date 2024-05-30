@@ -6,3 +6,4 @@ const autoroleSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.models.Autorole || mongoose.model('Autorole', autoroleSchema);
+//

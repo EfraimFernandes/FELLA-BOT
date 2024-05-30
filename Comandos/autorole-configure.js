@@ -26,3 +26,4 @@ module.exports = {
         message.reply(`O cargo ${role.name} foi configurado como autorole.`);
     },
 };
+//
