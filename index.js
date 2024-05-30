@@ -3,7 +3,14 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
+const client = new Client({ 
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildVoiceStates // Intents para voz
+    ] 
+});
 
 const token = process.env.TOKEN;  // Substitua pelo seu token do Discord
 const mongoURI = process.env.MONGODB_URI;  // Substitua pela sua string de conexão do MongoDB
