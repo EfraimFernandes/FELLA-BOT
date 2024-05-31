@@ -10,7 +10,7 @@ module.exports = {
         }
 
         if (user.balance < 10) {
-            return message.channel.send(`${message.author.username}, você precisa de pelo menos 10 moedas para jogar slots.`);
+            return message.reply('você precisa de pelo menos 10 moedas para jogar slots.');
         }
 
         const items = ['🍒', '🍋', '🍊', '🍉'];
@@ -20,10 +20,10 @@ module.exports = {
 
         if (slot1 === slot2 && slot2 === slot3) {
             user.balance += 50;
-            message.channel.send(`${message.author.username} jogou slots: [${slot1}] [${slot2}] [${slot3}] - Você ganhou! Seu saldo agora é ${user.balance} moedas.`);
+            message.reply(`jogou slots: [${slot1}] [${slot2}] [${slot3}] - Você ganhou! Seu saldo agora é ${user.balance} moedas.`);
         } else {
             user.balance -= 10;
-            message.channel.send(`${message.author.username} jogou slots: [${slot1}] [${slot2}] [${slot3}] - Você perdeu! Seu saldo agora é ${user.balance} moedas.`);
+            message.reply(`jogou slots: [${slot1}] [${slot2}] [${slot3}] - Você perdeu! Seu saldo agora é ${user.balance} moedas.`);
         }
         await user.save();
     },

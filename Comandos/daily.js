@@ -19,13 +19,13 @@ module.exports = {
                 now.getMonth() === lastDailyDate.getMonth() &&
                 now.getDate() === lastDailyDate.getDate()
             ) {
-                return message.channel.send(`${message.author.username}, você já resgatou suas moedas diárias hoje. Tente novamente amanhã.`);
+                return message.reply('você já resgatou suas moedas diárias hoje. Tente novamente amanhã.');
             }
         }
 
         user.balance += 100;
         user.lastDaily = now;
         await user.save();
-        message.channel.send(`${message.author.username}, você recebeu 100 moedas! Seu saldo agora é ${user.balance} moedas.`);
+        message.reply(`você recebeu 100 moedas! Seu saldo agora é ${user.balance} moedas.`);
     },
 };

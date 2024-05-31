@@ -29,7 +29,7 @@ module.exports = {
 
         try {
             await member.timeout(msDuration, 'Timeout aplicado pelo comando!');
-            message.channel.send(`${member.user.tag} foi colocado em timeout por ${duration}.`);
+            message.reply(`${member.user.tag} foi colocado em timeout por ${duration}.`);
         } catch (error) {
             console.error(error);
             message.reply('Houve um erro ao tentar colocar o usuário em timeout.');

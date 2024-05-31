@@ -18,7 +18,7 @@ module.exports = {
 
         try {
             await member.kick();
-            message.channel.send(`${user.tag} foi expulso do servidor.`);
+            message.reply(`${user.tag} foi expulso do servidor.`);
         } catch (error) {
             console.error(error);
             message.reply('Houve um erro ao tentar expulsar o usuário.');

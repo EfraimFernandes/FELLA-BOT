@@ -10,7 +10,7 @@ module.exports = {
             return message.reply('Você não tem permissão para banir usuários.');
         }
         member.ban().then(() => {
-            message.channel.send(`${member.user.tag} foi banido.`);
+            message.reply(`${member.user.tag} foi banido.`);
         });
     },
 };
