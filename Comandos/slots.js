@@ -1,4 +1,4 @@
-const User = require('../Models/User');
+const User = require('../models/User');
 
 module.exports = {
     name: 'slots',
