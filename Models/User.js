@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    userId:{type: String,unique: true},
+    userId:{type: String},
     balance: { type: Number, default: 0 },
     lastDaily: { type: Date, default: null },
 });

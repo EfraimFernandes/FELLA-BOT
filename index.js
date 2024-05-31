@@ -2,28 +2,18 @@ const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
-const client = new Client({ 
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildVoiceStates // Intents para voz
-    ] 
-});
+require('dotenv').config();
+const User = require('./models/User');
 
-const token = process.env.TOKEN;  // Substitua pelo seu token do Discord
-const mongoURI = process.env.MONGODB_URI;  // Substitua pela sua string de conexão do MongoDB
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
-// Conexão com o MongoDB
+const token = process.env.TOKEN;
+const mongoURI = process.env.MONGODB_URI;
+
 mongoose.connect(mongoURI)
     .then(() => console.log('Conectado ao MongoDB'))
     .catch(err => console.error(err));
 
-// Importe o modelo Autorole
-const Autorole = require('./Models/Autorole');
-
-// Configurar coleção de comandos
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, 'Comandos');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -34,31 +24,39 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
+let messageCount = {};
+
 client.once('ready', () => {
     console.log('Bot está online!');
-});
-
-// Evento para adicionar cargos automaticamente a novos membros
-client.on('guildMemberAdd', async member => {
-    const autorole = await Autorole.findOne({ guildId: member.guild.id });
-    if (autorole && autorole.roleId) {
-        const role = member.guild.roles.cache.get(autorole.roleId);
-        if (role) {
-            await member.roles.add(role);
-            console.log(`O cargo ${role.name} foi atribuído a ${member.user.tag}`);
-        } else {
-            console.log(`O cargo configurado não foi encontrado no servidor.`);
-        }
-    } else {
-        console.log(`Não há cargo de autorole configurado para este servidor.`);
-    }
 });
 
 client.on('messageCreate', async message => {
     if (message.author.bot) return;
 
-    const prefix = '!';  // Prefixo para os comandos
-    if (!message.content.startsWith(prefix)) return;
+    const prefix = '!';
+    if (!message.content.startsWith(prefix)) {
+        if (!messageCount[message.author.id]) {
+            messageCount[message.author.id] = 1;
+        } else {
+            messageCount[message.author.id]++;
+        }
+
+        const count = messageCount[message.author.id];
+        if (count % 100 === 0) {
+            try {
+                let user = await User.findOneAndUpdate(
+                    { userId: message.author.id },
+                    { $inc: { level: 1, balance: 1000 } },
+                    { upsert: true, new: true }
+                );
+                message.reply(`${message.author.username} subiu para o level ${user.level} e ganhou 1000 moedas!`);
+            } catch (error) {
+                console.error('Erro ao atualizar o level do usuário:', error);
+                message.reply('Houve um erro ao atualizar o seu level.');
+            }
+        }
+        return;
+    }
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();

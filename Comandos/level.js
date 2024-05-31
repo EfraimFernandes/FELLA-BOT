@@ -1,31 +1,19 @@
-const User = require('../Models/User');  // Importe o modelo do usuário
+const User = require('../models/User');
 
 module.exports = {
     name: 'level',
-    description: 'Sistema de nível',
+    description: 'Mostra o level do usuário',
     execute: async (message) => {
-        if (message.author.bot) return;
-
-        // Encontre o usuário no banco de dados ou crie um novo usuário
-        let user = await User.findOne({ discordId: message.author.id });
-        if (!user) {
-            user = new User({ discordId: message.author.id, xp: 0, level: 1 });  // Inicialize com level 1
+        try {
+            let user = await User.findOne({ userId: message.author.id });
+            if (!user) {
+                user = new User({ userId: message.author.id });
+                await user.save();
+            }
+            message.reply(`${message.author.username}, seu level é ${user.level}.`);
+        } catch (error) {
+            console.error('Erro ao verificar o level:', error);
+            message.reply('Houve um erro ao verificar o seu level.');
         }
-
-        user.xp += 1;  // Adicione algum XP ao usuário
-
-        // Verifique se o usuário deve subir de nível
-        const nextLevelXp = user.level * 10;
-        console.log(`Usuário: ${message.author.username}, XP: ${user.xp}, Level Atual: ${user.level}, XP para o próximo nível: ${nextLevelXp}`);
-
-        if (user.xp >= nextLevelXp) {
-            user.level += 1;
-
-            // Envie uma mensagem para o usuário subir de nível
-            message.reply(`Parabéns! Você subiu para o nível ${user.level}!`);
-        }
-
-        // Salve o usuário no banco de dados
-        await user.save();
     },
 };
